@@ -1,0 +1,41 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    users(
+        id: String
+    ): [User!]! @juniper(ownership: "owned")
+
+    products(
+        id: String
+        userId: String
+    ): [Product!]! @juniper(ownership: "owned")
+}
+
+type Mutation {
+    addUser(
+        name: String!
+        email: String!
+    ): User! @juniper(ownership: "owned")
+
+    addProduct(
+        userId: String!
+        name: String!
+        price: Float!
+    ): Product! @juniper(ownership: "owned")
+}
+
+type User {
+    id: String!
+    name: String!
+    email: String!
+}
+
+type Product {
+    id: String!
+    userId: String!
+    name: String!
+    price: Float!
+}
