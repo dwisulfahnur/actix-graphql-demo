@@ -1,6 +1,6 @@
 # actix-graphql-demo
 
-Demonstation of Rust implementtaion GraphQL using Juniper
+GraphQL Implementation in Rust using Actix, Juniper, and Mysql as Database
 
 # Prerequites
 - Rust Installed
