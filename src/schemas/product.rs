@@ -1,4 +1,3 @@
-use juniper::{FieldError, FieldResult, RootNode};
 use juniper;
 use mysql::{Error as DBError, from_row, params, Row};
 

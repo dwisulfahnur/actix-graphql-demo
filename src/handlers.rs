@@ -5,8 +5,8 @@ use futures::Future;
 use juniper::http::graphiql::graphiql_source;
 use juniper::http::GraphQLRequest;
 
-use crate::db::{Pool, get_db_pool};
-use crate::schemas::root::{Context, Schema, create_schema};
+use crate::db::Pool;
+use crate::schemas::root::{Context, create_schema, Schema};
 
 pub fn graphql(
     pool: web::Data<Pool>,

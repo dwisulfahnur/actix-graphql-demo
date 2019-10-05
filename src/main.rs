@@ -1,13 +1,13 @@
 #[macro_use]
 extern crate juniper;
-extern crate serde_json;
 extern crate r2d2;
 extern crate r2d2_mysql;
+extern crate serde_json;
 
-use actix_web::{App, HttpServer, middleware, Responder, web};
+use actix_web::{App, HttpServer, middleware, web};
 
-use crate::handlers::{graphql, graphql_playground, register};
 use crate::db::get_db_pool;
+use crate::handlers::{register};
 
 mod handlers;
 mod schemas;

@@ -4,8 +4,8 @@ use mysql::{Error as DBError, from_row, params, Row};
 
 use crate::db::Pool;
 
-use super::user::{User, UserInput};
 use super::product::{Product, ProductInput};
+use super::user::{User, UserInput};
 
 pub struct Context {
     pub dbpool: Pool
