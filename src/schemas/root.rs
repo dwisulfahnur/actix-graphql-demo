@@ -5,6 +5,7 @@ use mysql::{Error as DBError, from_row, params, Row};
 use crate::db::Pool;
 
 use super::user::{User, UserInput};
+use super::product::{Product, ProductInput};
 
 pub struct Context {
     pub dbpool: Pool
@@ -48,6 +49,37 @@ impl QueryRoot {
         let (id, name, email) = from_row(user.unwrap().unwrap());
         Ok(User { id, name, email })
     }
+
+    #[graphql(description = "List of all users")]
+    fn products(context: &Context) -> FieldResult<Vec<Product>> {
+        let mut conn = context.dbpool.get().unwrap();
+        let products = conn.prep_exec("select * from product", ())
+            .map(|result| {
+                result.map(|x| x.unwrap()).map(|mut row| {
+                    let (id, user_id, name, price) = from_row(row);
+                    Product { id, user_id, name, price }
+                }).collect()
+            }).unwrap();
+        Ok(products)
+    }
+
+    #[graphql(description = "Get Single user reference by user ID")]
+    fn product(context: &Context, id: String) -> FieldResult<Product> {
+        let mut conn = context.dbpool.get().unwrap();
+        let product: Result<Option<Row>, DBError> = conn.first_exec(
+            "SELECT * FROM user WHERE id=:id",
+            params! {"id" => id},
+        );
+        if let Err(err) = product {
+            return Err(FieldError::new(
+                "Product Not Found",
+                graphql_value!({ "not_found": "product not found" }),
+            ));
+        }
+
+        let (id, user_id, name, price) = from_row(product.unwrap().unwrap());
+        Ok(Product { id, user_id, name, price })
+    }
 }
 
 
@@ -83,6 +115,42 @@ impl MutationRoot {
                 };
                 Err(FieldError::new(
                     "Failed to create new user",
+                    graphql_value!({ "internal_error": msg }),
+                ))
+            }
+        }
+    }
+
+    fn create_product(context: &Context, product: ProductInput) -> FieldResult<Product> {
+        let mut conn = context.dbpool.get().unwrap();
+        let new_id = uuid::Uuid::new_v4().to_simple().to_string();
+
+        let insert: Result<Option<Row>, DBError> = conn.first_exec(
+            "INSERT INTO product(id, user_id, name, price) VALUES(:id, :user_id, :name, :price)",
+            params! {
+                "id" => &new_id.to_owned(),
+                "user_id" => &product.user_id.to_owned(),
+                "name" => &product.name.to_owned(),
+                "price" => &product.price.to_owned(),
+            },
+        );
+
+        match insert {
+            Ok(opt_row) => {
+                Ok(Product {
+                    id: new_id,
+                    user_id: product.user_id,
+                    name: product.name,
+                    price: product.price,
+                })
+            }
+            Err(err) => {
+                let msg = match err {
+                    DBError::MySqlError(err) => err.message,
+                    _ => "internal error".to_owned()
+                };
+                Err(FieldError::new(
+                    "Failed to create new product",
                     graphql_value!({ "internal_error": msg }),
                 ))
             }
