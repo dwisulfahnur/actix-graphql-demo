@@ -4,26 +4,13 @@ use mysql::{Error as DBError, from_row, params, Row};
 
 use crate::db::Pool;
 
+use super::user::{User, UserInput};
+
 pub struct Context {
     pub dbpool: Pool
 }
 
 impl juniper::Context for Context {}
-
-#[derive(Default, Debug, GraphQLObject)]
-#[graphql(description = "User")]
-pub struct User {
-    pub id: String,
-    pub name: String,
-    pub email: String,
-}
-
-#[derive(GraphQLInputObject)]
-#[graphql(description = "User Input")]
-pub struct UserInput {
-    pub name: String,
-    pub email: String,
-}
 
 pub struct QueryRoot;
 

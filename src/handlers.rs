@@ -6,8 +6,7 @@ use juniper::http::graphiql::graphiql_source;
 use juniper::http::GraphQLRequest;
 
 use crate::db::{Pool, get_db_pool};
-use crate::schemas::{Context, Schema};
-use crate::schemas::create_schema;
+use crate::schemas::root::{Context, Schema, create_schema};
 
 pub fn graphql(
     pool: web::Data<Pool>,
