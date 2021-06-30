@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/dwisulfahnur/actix-graphql-demo.svg?branch=master)](https://travis-ci.org/dwisulfahnur/actix-graphql-demo)
 
-***Published on the [actix/examples repository](https://github.com/actix/examples/tree/master/graphql-demo)***
+***Published on the [actix/examples repository](https://github.com/actix/examples/tree/master/graphql/juniper-advanced)***
 
 GraphQL Implementation in Rust using Actix, Juniper, and Mysql as Database
 
